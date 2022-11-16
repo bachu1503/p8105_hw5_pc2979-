@@ -10,7 +10,6 @@ library(tidyverse)
 library(rvest)
 ```
 
-
 ## Question 1
 
 Import data by listing out all path names and using `map` to grab observations for each path.
@@ -52,7 +51,8 @@ The graph suggests that outcomes are highly correlated within each group - the o
 
 ## Question 2
 
+Import homicide data from Washington Post github
 ```{r}
-
+post <- read_csv("https://raw.github.com/washingtonpost/data-homicides/master/homicide-data.csv")
 ```
 
