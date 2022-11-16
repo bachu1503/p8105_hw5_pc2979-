@@ -55,31 +55,18 @@ Import homicide data from Washington Post github
 ```{r}
 post <- read_csv("https://raw.github.com/washingtonpost/data-homicides/master/homicide-data.csv") %>%
   janitor::clean_names() %>%
-  mutate(city_state = paste(city, state, sep =  ", ")) %>%
+  mutate(
+    state = case_when(
+      city %in% "Tulsa" ~ "OK",
+      TRUE ~ state
+    ),
+    city_state = paste(city, state, sep =  ", ")) %>%
   select(city_state, everything())
 ```
 There are `r nrow(post)` observations and `r ncol(post)` variables in the `post` dataset. Each row is a single reported homicide by reported date, victim's name, race, and age, reported city and state, latitude and longitude of report, and status of the case. 
 
 A total of `r post %>% select(uid) %>% distinct %>% count` cases across `r post %>% select(state) %>% distinct() %>% count()` states in `r post %>% select(city) %>% distinct() %>% count()` cities are found in the dataset.
 
-```{r}
-# summarize_post <-
-#   post %>%
-#   group_by(city_state, disposition) %>%
-#   count(disposition) %>%
-#   spread(key = disposition, value = n) %>%
-#   janitor::clean_names() %>%
-#   mutate(total_hom = sum(closed_by_arrest, closed_without_arrest, open_no_arrest, na.rm = TRUE),
-#          n_unsolved = sum(closed_without_arrest, open_no_arrest, na.rm = TRUE),
-#          n_solved = closed_by_arrest) %>%
-#   select(-c(closed_by_arrest, closed_without_arrest, open_no_arrest))
-# 
-# summarize_post %>%
-#   filter(city_state == "Baltimore, MD") %>%
-#   prop.test(x = pull(n_unsolved), n = pull(total_hom), conf.level = 0.95)
-# 
-# ?prop.test
-```
 
 Create functions calculating number of total homicides, number of unsolved homicides, and number of solved homicides for each city. `Map` function into data nested by city.
 ```{r}
@@ -130,7 +117,12 @@ post_nest %>%
 
 
 ```{r}
-
+post_nest %>%
+  mutate(prop_test = map2(n_unsolved, n_homicide, ~prop.test(.x,.y, conf.level = 0.95) %>%
+                            broom::tidy())) %>% 
+  unnest(prop_test) %>%
+  select(city_state, estimate, "CI_lower" = conf.low, "CI_upper" = conf.high) %>%
+  knitr::kable(digits = 2)
 ```
 
 
