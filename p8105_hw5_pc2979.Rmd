@@ -55,4 +55,13 @@ Import homicide data from Washington Post github
 ```{r}
 post <- read_csv("https://raw.github.com/washingtonpost/data-homicides/master/homicide-data.csv")
 ```
+There are `r nrow(post)` observations and `r ncol(post)` variables in the `post` dataset. Each row is a single reported homicide by reported date, victim's name, race, and age, reported city and state, latitude and longitude of report, and status of the case. 
+
+A total of `r post %>% select(uid) %>% distinct %>% count` cases across `r post %>% select(state) %>% distinct() %>% count()` states in `r post %>% select(city) %>% distinct() %>% count()` cities are found in the dataset.
+
+```{r}
+
+```
+
+
 
