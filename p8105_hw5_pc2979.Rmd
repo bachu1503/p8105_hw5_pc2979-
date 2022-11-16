@@ -9,3 +9,28 @@ output:
 library(tidyverse)
 library(rvest)
 ```
+
+
+## Question 1
+
+Import data by listing out all path names and using `map` to grab observations for each path.
+```{r}
+df <-
+  tibble(
+    files = list.files("data"),
+    path = str_c("data/", files)
+  ) %>%
+  mutate(data = map(path, read_csv)) %>%
+  unnest()
+```
+
+Clean data
+
+```{r}
+
+```
+
+
+
+
+
