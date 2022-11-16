@@ -130,7 +130,6 @@ balti_hom <-
                             broom::tidy())) %>% 
   unnest(prop_test) %>%
   select(city_state, estimate, "CI_lower" = conf.low, "CI_upper" = conf.high) %>%
-  knitr::kable(digits = 2)
 
 balti_hom
 ```
@@ -151,6 +150,7 @@ Create plot showing proportion and 95% CI of unsolved homicides for each city
 ```{r}
 all_hom %>%
   ggplot(aes(x = reorder(city_state, -estimate), y = estimate)) +
+  geom_point(aes(color = city_state)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.5, alpha = 0.7) +
   labs(
     title = "Proportion of Unsolved Homicides Across 50 US Cities",
@@ -162,4 +162,98 @@ all_hom %>%
 ```
 
 
+## Problem 3
+
+
+
+```{r}
+n = 30
+sigma = 5
+mu = 0
+
+sim_norm_sample = function(n = 30, mu, sigma = 5) {
+  data = tibble(
+    norm_sample = rnorm(n, mean = mu, sd = sigma),
+  )
+}
+
+t_test = function(x, y){
+  t.test(x,
+         alternative = c("two.sided"),
+         mu = y,
+         conf.level = 0.95)
+}
+```
+
+```{r}
+sim_results_df <- 
+  expand_grid(
+    sample_size = 30,
+    mu = 0,
+    iteration = 1:5000
+  ) %>% 
+  mutate(
+    norm_sample = map(sample_size, sim_norm_sample),
+    mu_est = map(norm_sample, t_test)
+  ) %>%
+  unnest(mu_est)
+
+
+    
+sim_results_df <- 
+  expand_grid(
+    sample_size = 30,
+    mu = 0,
+    iteration = 1:5000
+  ) %>% 
+  mutate(
+    norm_sample = map(sample_size, sim_norm_sample)
+  ) %>%
+  unnest(norm_sample) %>%
+  mutate(
+    mu_est =
+      map2(norm_sample, mu, ~t.test(x = .x, y = .y))
+  )
+
+
+output = vector("list", length)
+for (i in 1:5000){
+  output[[i]] = sim_norm_sample(mu = 0)
+}
+
+sim_results_df = 
+  expand_grid(
+    sample_size = c(30, 60, 120, 240),
+    true_sigma = c(6, 3),
+    iteration = 1:1000
+  ) %>% 
+  mutate(
+    estimate_df = 
+      map2(.x = sample_size, .y = true_sigma, ~sim_mean_sd(n_obs = .x, sigma = .y))
+  )
+
+data %>%
+    summarize(
+      mu_hat = mean(x),
+      sigma_hat = sd(x)
+    )
+
+post_nest <-
+  post %>%
+  nest(data = uid:disposition) %>%
+  mutate(n_homicide = map(data, num_hom),
+         n_unsolved = map(data, num_unsolved),
+         n_solved = map(data, num_solved)) %>%
+  unnest(c(n_homicide, n_unsolved, n_solved))
+
+
+all_hom <-
+  post_nest %>%
+  mutate(prop_test = map2(n_unsolved, n_homicide, ~prop.test(.x,.y, conf.level = 0.95) %>%
+                            broom::tidy())) %>% 
+  unnest(prop_test) %>%
+  select(city_state, estimate, "ci_lower" = conf.low, "ci_upper" = conf.high)
+
+?t.test
+```
 
