@@ -269,4 +269,4 @@ ggplot(mean_est, aes(x = mu, y = mean_est, color = "Entire Sample")) +
   scale_y_continuous(breaks = seq(0, 6, by = 1))
   
 ```
-
+Based on the graph, we see the average estimates of mu hat in samples where the null was rejected differs with the average estimate of mu hat among all samples between mu = 0 and mu = 4. A possible reason for the divergence is because of the relationship between effect size and power. As we see in the previous graph, power at mu = 1 is ~0.2 and ~0.55 at mu = 2. This suggests that at 'lower' effect sizes, samples are not correctly rejected due to low power, thus the deviation from the average true mu. 
