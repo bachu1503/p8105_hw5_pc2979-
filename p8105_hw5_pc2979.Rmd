@@ -246,9 +246,27 @@ mean_est <- sim_mu %>%
   summarize(mean_est = mean(estimate))
 
 mean_est_rej <- sim_mu %>%
-  filter
+  filter(p.value < 0.05) %>%
+  group_by(mu) %>%
+  summarize(mean_est = mean(estimate))
 
-sim_mu %>%
+ggplot(mean_est, aes(x = mu, y = mean_est, color = "Entire Sample")) +
+  geom_point() +
+  geom_line() +
+  geom_point(data = mean_est_rej, aes(x = mu, y = mean_est, color = "Rejected Sample")) +
+  geom_line(data = mean_est_rej, aes(x = mu, y = mean_est, color = "Rejected Sample")) +
+  labs(
+    title = "Average estimate of μ of entire sample and of sample where null was rejected",
+    x = "True Value of μ",
+    y = "Proportion (Power)"
+  ) +
+  scale_color_manual(name = "Data",
+                     breaks = c("Entire Sample", "Rejected Sample"),
+                     values = c("Entire Sample" = "blue", "Rejected Sample" = "purple")) +
+  theme(plot.title = element_text(size = 8),
+        text = element_text(size = 12)) +
+  scale_x_continuous(breaks = seq(0, 6, by = 1)) +
+  scale_y_continuous(breaks = seq(0, 6, by = 1))
   
 ```
 
