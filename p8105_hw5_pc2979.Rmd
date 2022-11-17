@@ -65,7 +65,7 @@ tidydf %>%
   geom_path() + 
   facet_grid(~group)
 ```
-The graph suggests that outcomes are highly correlated within each group - the outcome of those in the experimental arm are more likely to trend upward over time while the outcome of those in the control arm vary over time. 
+* The graph suggests that outcomes are highly correlated within each group - the outcome of those in the experimental arm are more likely to trend upward over time while the outcome of those in the control arm vary over time. 
 
 ## Question 2
 
@@ -81,9 +81,9 @@ post <- read_csv("https://raw.github.com/washingtonpost/data-homicides/master/ho
     city_state = paste(city, state, sep =  ", ")) %>%
   select(city_state, everything())
 ```
-There are `r nrow(post)` observations and `r ncol(post)` variables in the `post` dataset. Each row is a single reported homicide by reported date, victim's name, race, and age, reported city and state, latitude and longitude of report, and status of the case. 
+* There are `r nrow(post)` observations and `r ncol(post)` variables in the `post` dataset. Each row is a single reported homicide by reported date, victim's name, race, and age, reported city and state, latitude and longitude of report, and status of the case. 
 
-A total of `r post %>% select(uid) %>% distinct %>% count` cases across `r post %>% select(state) %>% distinct() %>% count()` states in `r post %>% select(city) %>% distinct() %>% count()` cities are found in the dataset.
+* A total of `r post %>% select(uid) %>% distinct %>% count` cases across `r post %>% select(state) %>% distinct() %>% count()` states in `r post %>% select(city) %>% distinct() %>% count()` cities are found in the dataset.
 
 
 Create functions calculating number of total homicides, number of unsolved homicides, and number of solved homicides for each city. `Map` function into data nested by city.
@@ -196,7 +196,8 @@ sim_mu_0 <-
 
 sim_mu_0
 ```
-Esimates and p-values from simulated estimates located in `sim_mu_0` with a total of `r nrow(sim_mu_0)` observations.
+
+* Esimates and p-values from simulated estimates located in `sim_mu_0` with a total of `r nrow(sim_mu_0)` observations.
 
 Repeat the above for μ={1,2,3,4,5,6}, and complete the following:
 ```{r}
@@ -235,7 +236,8 @@ sim_mu %>%
   scale_x_continuous(breaks = seq(0, 6, by = 1)) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.1))
 ```
-Based on the graph, we see a positive relationship between effect size and power. Between mu = 0 and mu = 3, power increases but after mu = 3 (or as power approaches 1), the slope of the curve tapers off, suggesting a decreasing effect of effect size on power.
+
+* Based on the graph, we see a positive relationship between effect size and power. Between mu = 0 and mu = 3, power increases but after mu = 3 (or as power approaches 1), the slope of the curve tapers off, suggesting a decreasing effect of effect size on power.
 
 
 Make a plot showing the average estimate of μ̂ on the y axis and the true value of μ on the x axis. Make a second plot (or overlay on the first) the average estimate of μ̂ only in samples for which the null was rejected on the y axis and the true value of μ on the x axis. Is the sample average of μ̂ across tests for which the null is rejected approximately equal to the true value of μ? Why or why not?
@@ -269,4 +271,5 @@ ggplot(mean_est, aes(x = mu, y = mean_est, color = "Entire Sample")) +
   scale_y_continuous(breaks = seq(0, 6, by = 1))
   
 ```
-Based on the graph, we see the average estimates of mu hat in samples where the null was rejected differs with the average estimate of mu hat among all samples between mu = 0 and mu = 4. A possible reason for the divergence is because of the relationship between effect size and power. As we see in the previous graph, power at mu = 1 is ~0.2 and ~0.55 at mu = 2. This suggests that at 'lower' effect sizes, samples are not correctly rejected due to low power, thus the deviation from the average true mu. 
+
+* Based on the graph, we see the average estimates of mu hat in samples where the null was rejected differs with the average estimate of mu hat among all samples between mu = 0 and mu = 4. A possible reason for the divergence is because of the relationship between effect size and power. As we see in the previous graph, power at mu = 1 is ~0.2 and ~0.55 at mu = 2. This suggests that at 'lower' effect sizes, samples are not correctly rejected due to low power, thus the deviation from the average true mu. 
